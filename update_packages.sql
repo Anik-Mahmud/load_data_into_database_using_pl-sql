@@ -1,12 +1,13 @@
 GRANT EXECUTE ON UTL_FILE TO PUBLIC;
+SET SERVEROUTPUT ON;
+--header
+CREATE or REPLACE PACKAGE pkg_load IS
+    PROCEDURE LoadLecturerData(p_FileDir in varchar2,p_fileName in varchar2);
+END pkg_load;
 
-create or replace directory IMPORTDIR as 'C:\Users\Anik\Documents\pl_sql\pl_load';
-grant read, write on directory IMPORTDIR to scott;
-
-
-
-CREATE or REPLACE PROCEDURE LoadLecturerData(p_FileDir in varchar2,p_fileName in varchar2)
-AS
+CREATE OR REPLACE PACKAGE BODY pkg_load IS
+    --procedure
+    PROCEDURE LoadLecturerData(p_FileDir in varchar2,p_fileName in varchar2) AS
     v_FileHandle UTL_FILE.FILE_TYPE;
     v_newLine VARCHAR2(100);
     MyFirstName lecturer.first_name%TYPE;
@@ -47,18 +48,21 @@ BEGIN
         UTL_FILE.FCLOSE(v_FileHandle);
         RAISE;
         
-END LoadLecturerData;
-/   
-
+    END;
+END pkg_load;
+/
+ 
 create or replace directory IMPORTDIR as 'C:\Users\Anik\Documents\pl_sql\pl_load';
 grant read, write on directory IMPORTDIR to scott;
 BEGIN
-LoadLecturerData('IMPORTDIR','LECTURER_DATA.csv');
+  pkg_load.loadlecturerdata('IMPORTDIR','LECTURER_DATA.csv');
 END;
 
 
 
 
-SELECT
-    *
-FROM lecturer;
+
+
+
+--ALTER TABLE lecturer
+--DISABLE CONSTRAINT SYS_C0011121;
